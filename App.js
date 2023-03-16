@@ -1,188 +1,209 @@
-import * as React from "react";
-import { useState } from "react";
-
+import { StatusBar } from "expo-status-bar";
+import React from "react";
 import {
-  View,
-  FlatList,
+  StyleSheet,
   Text,
-  Dimensions,
-  TouchableOpacity,
+  View,
+  SectionList,
+  SafeAreaView,
   Image,
+  FlatList,
+  TouchableOpacity,
 } from "react-native";
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import DetailsScreen from "./screens/DetailsScreen";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Moment from "react-moment";
-
-const screenWidth = Dimensions.get("window").width;
 
 function HomeScreen({ navigation }) {
-  const [mainImageSelected, setMainImageSelected] = useState("0");
-
-  const onViewableItemsChanged = (info) => {
-    setMainImageSelected(info.viewableItems[0].index);
-  };
-
-  const viewabilityConfigCallbackPairs = React.useRef([
-    { onViewableItemsChanged },
-  ]);
-
   const SUNRISES = [
     {
-      id: "1",
-      timezone: "CST",
-      images: [
+      title: "Current Sunrises (UTC-6)",
+      current: 1,
+      data: [
         {
-          id: "1",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
+          key: "1",
+          text: "Item text 1",
+          uri: "https://picsum.photos/id/1/2000",
         },
         {
-          id: "2",
-          location: "Plano, TX",
-          image:
-            "https://images.pexels.com/photos/36744/agriculture-arable-clouds-countryside.jpg",
-          time: "2023-03-11T10:59-0500",
-          author: "@bobsmith",
+          key: "2",
+          text: "Item text 2",
+          uri: "https://picsum.photos/id/10/2000",
+        },
+
+        {
+          key: "3",
+          text: "Item text 3",
+          uri: "https://picsum.photos/id/1002/2000",
         },
         {
-          id: "3",
-          location: "Chicago, IL",
-          image:
-            "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg",
-          time: "2023-03-12T10:59-0500",
-          author: "@theblah",
+          key: "4",
+          text: "Item text 4",
+          uri: "https://picsum.photos/id/1006/2000",
+        },
+        {
+          key: "5",
+          text: "Item text 5",
+          uri: "https://picsum.photos/id/1008/2000",
         },
       ],
     },
     {
-      id: "2",
-      timezone: "MST",
-      images: [
+      title: "Punk and hardcore",
+      data: [
         {
-          id: "1",
-          location: "Not Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
+          key: "1",
+          text: "Item text 1",
+          uri: "https://picsum.photos/id/1011/2000",
         },
         {
-          id: "2",
-          location: "Plano, TX",
-          image:
-            "https://images.pexels.com/photos/36744/agriculture-arable-clouds-countryside.jpg",
-          time: "2023-03-11T10:59-0500",
-          author: "@bobsmith",
+          key: "2",
+          text: "Item text 2",
+          uri: "https://picsum.photos/id/1012/2000",
+        },
+
+        {
+          key: "3",
+          text: "Item text 3",
+          uri: "https://picsum.photos/id/1013/2000",
+        },
+        {
+          key: "4",
+          text: "Item text 4",
+          uri: "https://picsum.photos/id/1015/2000",
+        },
+        {
+          key: "5",
+          text: "Item text 5",
+          uri: "https://picsum.photos/id/1016/2000",
+        },
+      ],
+    },
+    {
+      title: "Based on your recent listening",
+      data: [
+        {
+          key: "1",
+          text: "Item text 1",
+          uri: "https://picsum.photos/id/1020/2000",
+        },
+        {
+          key: "2",
+          text: "Item text 2",
+          uri: "https://picsum.photos/id/1024/2000",
+        },
+
+        {
+          key: "3",
+          text: "Item text 3",
+          uri: "https://picsum.photos/id/1027/2000",
+        },
+        {
+          key: "4",
+          text: "Item text 4",
+          uri: "https://picsum.photos/id/1035/2000",
+        },
+        {
+          key: "5",
+          text: "Item text 5",
+          uri: "https://picsum.photos/id/1038/2000",
+        },
+      ],
+    },
+    {
+      title: "123Based on your recent listening",
+      data: [
+        {
+          key: "1",
+          text: "Item text 1",
+          uri: "https://picsum.photos/id/1020/2000",
+        },
+        {
+          key: "2",
+          text: "Item text 2",
+          uri: "https://picsum.photos/id/1024/2000",
+        },
+
+        {
+          key: "3",
+          text: "Item text 3",
+          uri: "https://picsum.photos/id/1027/2000",
+        },
+        {
+          key: "4",
+          text: "Item text 4",
+          uri: "https://picsum.photos/id/1035/2000",
+        },
+        {
+          key: "5",
+          text: "Item text 5",
+          uri: "https://picsum.photos/id/1038/2000",
         },
       ],
     },
   ];
 
-  const HeaderItem = ({ item }) => (
-    <TouchableOpacity
-      activeOpacity={1}
-      onPress={() => {
-        console.log("next");
-        /*
-        navigation.navigate("Details", {
-          itemId: 100,
-        });
-        */
-      }}
-    >
-      <View style={{ width: screenWidth - 40 }}>
-        <Image
-          tw="h-72 w-screen rounded-xl"
-          source={{
-            uri: item.image,
-          }}
-          style={{
-            width: "100%",
-          }}
-        />
-      </View>
-    </TouchableOpacity>
-  );
-
-  const BodyItem = ({ item }) => (
-    <View tw="flex flex-row justify-between pt-2">
-      <View>
-        <Text>{item.timezone}</Text>
-      </View>
-      <View>
-        <FlatList
-          horizontal
-          data={item.images}
-          renderItem={({ item }) => <BodyItemImage item={item} />}
-          keyExtractor={(item) => item.id}
-        />
-      </View>
-    </View>
-  );
-
-  const BodyItemImage = ({ item }) => (
-    <Image
-      tw="h-24 w-24 rounded-xl"
-      source={{
-        uri: item.image,
-      }}
-    />
-  );
+  const ListItem = ({ item, current }) => {
+    return (
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => {
+          navigation.navigate("Details", {
+            uri: item.uri,
+          });
+        }}
+      >
+        <View tw="m-2.5">
+          {current ? (
+            <Image
+              source={{
+                uri: item.uri,
+              }}
+              tw="h-80 w-80 rounded"
+              resizeMode="cover"
+            />
+          ) : (
+            <Image
+              source={{
+                uri: item.uri,
+              }}
+              tw="h-40 w-40 rounded"
+              resizeMode="cover"
+            />
+          )}
+          <Text tw="text-sweet-pink">{item.text}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
-    <View tw="bg-slate-300 h-screen">
-      <SafeAreaView tw="px-5">
-        <Text tw="text-2xl font-bold py-0.5">
-          Current Sunrises for {SUNRISES[0].timezone}
-        </Text>
-        <Text tw="pb-2">
-          Current Time: <Moment local element={Text} />
-        </Text>
-
-        <FlatList
-          data={SUNRISES[0].images}
-          renderItem={({ item }) => <HeaderItem item={item} />}
-          horizontal
-          pagingEnabled
-          keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-          initialNumToRender={0}
-          decelerationRate={"fast"}
-          viewabilityConfig={{
-            waitForInteraction: true,
-            viewAreaCoveragePercentThreshold: 95,
+    <View tw="flex-1 bg-bright-yellow h-screen">
+      <SafeAreaView tw="flex-1">
+        <SectionList
+          contentContainerStyle={{ paddingHorizontal: 10 }}
+          stickySectionHeadersEnabled={false}
+          sections={SUNRISES}
+          showsVerticalScrollIndicator={false}
+          renderSectionHeader={({ section }) => (
+            <>
+              <Text tw="text-xl font-extrabold text-dark-purple">
+                {section.title}
+              </Text>
+              <FlatList
+                horizontal
+                data={section.data}
+                renderItem={({ item }) => (
+                  <ListItem item={item} current={section.current} />
+                )}
+                showsHorizontalScrollIndicator={false}
+              />
+            </>
+          )}
+          renderItem={() => {
+            return null;
           }}
-          viewabilityConfigCallbackPairs={
-            viewabilityConfigCallbackPairs.current
-          }
-        />
-
-        <View tw="flex flex-row justify-between pt-2">
-          <Text tw="font-semibold">
-            {SUNRISES[0].images[mainImageSelected].location}
-          </Text>
-          <Moment fromNow element={Text}>
-            {SUNRISES[0].images[mainImageSelected].time}
-          </Moment>
-        </View>
-        <View>
-          <Text tw="italic">
-            {SUNRISES[0].images[mainImageSelected].author}
-          </Text>
-        </View>
-
-        <Text tw="text-2xl font-bold py-0.5">Sunrises Around the World</Text>
-
-        <FlatList
-          data={SUNRISES}
-          renderItem={({ item }) => <BodyItem item={item} />}
-          keyExtractor={(item) => item.id}
         />
       </SafeAreaView>
     </View>
@@ -197,10 +218,32 @@ function App() {
       <Stack.Navigator
         screenOptions={{
           animation: "none",
+          headerBackTitle: "Back",
+          headerTintColor: "#fff",
         }}
       >
-        <Stack.Screen name="24sunrises" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen
+          name="24sunrises"
+          options={{
+            headerTintColor: "#805690",
+            title: "24sunrises",
+            headerStyle: {
+              backgroundColor: "#fdf1cd",
+            },
+            headerShadowVisible: false,
+          }}
+          component={HomeScreen}
+        />
+        <Stack.Screen
+          name="Details"
+          options={{
+            headerStyle: {
+              backgroundColor: "#000",
+            },
+            headerShadowVisible: false,
+          }}
+          component={DetailsScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
