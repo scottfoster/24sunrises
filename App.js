@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -19,214 +19,28 @@ import Moment from "react-moment";
 import Clock from "react-live-clock";
 
 function HomeScreen({ navigation }) {
-  const SUNRISES = [
-    {
-      title: "Current Sunrise (UTC-6)",
-      current: 1,
-      timezone: "US/Pacific",
-      data: [
-        {
-          key: "1",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1/2000",
-        },
-        {
-          key: "2",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/10/2000",
-        },
+  const [sunriseData, setSunriseData] = useState([]);
 
-        {
-          key: "3",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1002/2000",
-        },
-        {
-          key: "4",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1006/2000",
-        },
-        {
-          key: "5",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1008/2000",
-        },
-      ],
-    },
-    {
-      title: "Punk and hardcore",
-      data: [
-        {
-          key: "1",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1011/2000",
-        },
-        {
-          key: "2",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1012/2000",
-        },
-
-        {
-          key: "3",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1013/2000",
-        },
-        {
-          key: "4",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1015/2000",
-        },
-        {
-          key: "5",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1016/2000",
-        },
-      ],
-    },
-    {
-      title: "Based on your recent listening",
-      data: [
-        {
-          key: "1",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1020/2000",
-        },
-        {
-          key: "2",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1024/2000",
-        },
-
-        {
-          key: "3",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1027/2000",
-        },
-        {
-          key: "4",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1035/2000",
-        },
-        {
-          key: "5",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1038/2000",
-        },
-      ],
-    },
-    {
-      title: "123Based on your recent listening",
-      data: [
-        {
-          key: "1",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1020/2000",
-        },
-        {
-          key: "2",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1024/2000",
-        },
-
-        {
-          key: "3",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1027/2000",
-        },
-        {
-          key: "4",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1035/2000",
-        },
-        {
-          key: "5",
-          location: "Dallas, TX",
-          image:
-            "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg",
-          time: "2023-03-10T10:59-0500",
-          author: "@scottfoster",
-          uri: "https://picsum.photos/id/1038/2000",
-        },
-      ],
-    },
-  ];
+  const getData = () => {
+    fetch("https://s3.amazonaws.com/imfoster.com/24sunrises.json", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (myJson) {
+        setSunriseData(myJson);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  useEffect(() => {
+    getData();
+  }, []);
 
   const ListItem = ({ item, current }) => {
     return (
@@ -240,30 +54,42 @@ function HomeScreen({ navigation }) {
       >
         <View tw="m-2.5">
           {current ? (
-            <Image
-              source={{
-                uri: item.uri,
-              }}
-              tw="h-80 w-80 rounded"
-              resizeMode="cover"
-            />
-          ) : (
-            <Image
-              source={{
-                uri: item.uri,
-              }}
-              tw="h-40 w-40 rounded"
-              resizeMode="cover"
-            />
-          )}
+            <>
+              <Image
+                source={{
+                  uri: item.uri,
+                }}
+                tw="h-80 w-80 rounded-lg"
+                resizeMode="cover"
+              />
 
-          <View tw="flex flex-row justify-between pt-1">
-            <Text tw="font-semibold text-sweet-pink">{item.location}</Text>
-            <Moment tw="text-sweet-pink" fromNow element={Text}>
-              {item.time}
-            </Moment>
-          </View>
-          {current && <Text>{item.author}</Text>}
+              <View tw="flex flex-row justify-between pt-1">
+                <Text tw="font-semibold text-sweet-pink">{item.location}</Text>
+                <Moment tw="text-sweet-pink" fromNow element={Text}>
+                  {item.time}
+                </Moment>
+              </View>
+              <Text>{item.author}</Text>
+            </>
+          ) : (
+            <>
+              <Image
+                source={{
+                  uri: item.uri,
+                }}
+                tw="h-36 w-36 rounded-lg"
+                resizeMode="cover"
+              />
+              <Text tw="font-semibold text-sweet-pink break-all">
+                xx{item.location}
+              </Text>
+              <Text>
+                <Moment tw="text-black" fromNow element={Text}>
+                  {item.time}
+                </Moment>
+              </Text>
+            </>
+          )}
         </View>
       </TouchableOpacity>
     );
@@ -275,7 +101,7 @@ function HomeScreen({ navigation }) {
         <SectionList
           contentContainerStyle={{ paddingHorizontal: 10 }}
           stickySectionHeadersEnabled={false}
-          sections={SUNRISES}
+          sections={sunriseData}
           showsVerticalScrollIndicator={false}
           renderSectionHeader={({ section }) => (
             <>
@@ -329,9 +155,7 @@ function App() {
           options={{
             headerTintColor: "#805690",
             title: "24sunrises",
-            headerStyle: {
-              backgroundColor: "#fdf1cd",
-            },
+            headerTransparent: true,
             headerShadowVisible: false,
           }}
           component={HomeScreen}
