@@ -1,7 +1,5 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import {
-  StyleSheet,
   Text,
   View,
   SectionList,
@@ -22,16 +20,20 @@ function HomeScreen({ navigation }) {
   const [sunriseData, setSunriseData] = useState([]);
 
   const getData = () => {
-    fetch("https://s3.amazonaws.com/imfoster.com/24sunrises.json", {
+    fetch("https://s3.amazonaws.com/imfoster.com/24sunrises-data3.json", {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: 0,
       },
     })
       .then(function (response) {
         return response.json();
       })
       .then(function (myJson) {
+        console.log(myJson);
         setSunriseData(myJson);
       })
       .catch((error) => {
@@ -42,7 +44,7 @@ function HomeScreen({ navigation }) {
     getData();
   }, []);
 
-  const ListItem = ({ item, current }) => {
+  const ListItem = ({ item, size }) => {
     return (
       <TouchableOpacity
         activeOpacity={1}
@@ -52,9 +54,9 @@ function HomeScreen({ navigation }) {
           });
         }}
       >
-        <View tw="m-2.5">
-          {current ? (
-            <>
+        <View tw="mt-2.5 mr-2.5">
+          <>
+            {size == "large" && (
               <Image
                 source={{
                   uri: item.uri,
@@ -62,17 +64,9 @@ function HomeScreen({ navigation }) {
                 tw="h-80 w-80 rounded-lg"
                 resizeMode="cover"
               />
+            )}
 
-              <View tw="flex flex-row justify-between pt-1">
-                <Text tw="font-semibold text-sweet-pink">{item.location}</Text>
-                <Moment tw="text-sweet-pink" fromNow element={Text}>
-                  {item.time}
-                </Moment>
-              </View>
-              <Text>{item.author}</Text>
-            </>
-          ) : (
-            <>
+            {size == "normal" && (
               <Image
                 source={{
                   uri: item.uri,
@@ -80,23 +74,41 @@ function HomeScreen({ navigation }) {
                 tw="h-36 w-36 rounded-lg"
                 resizeMode="cover"
               />
-              <Text tw="font-semibold text-sweet-pink break-all">
-                xx{item.location}
-              </Text>
-              <Text>
-                <Moment tw="text-black" fromNow element={Text}>
-                  {item.time}
-                </Moment>
-              </Text>
-            </>
-          )}
+            )}
+
+            {size == "small" && (
+              <Image
+                source={{
+                  uri: item.uri,
+                }}
+                tw="h-24 w-24 rounded-lg"
+                resizeMode="cover"
+              />
+            )}
+
+            {size == "large" && (
+              <>
+                <View tw="flex flex-row justify-between pt-1">
+                  <Text tw="font-semibold text-lg">{item.location}</Text>
+                  <Moment fromNow element={Text}>
+                    {item.time}
+                  </Moment>
+                </View>
+                <Text>{item.author}</Text>
+              </>
+            )}
+
+            {size == "normal" && <Text>{item.location}</Text>}
+
+            {size == "small" && <Text>{item.location}</Text>}
+          </>
         </View>
       </TouchableOpacity>
     );
   };
 
   return (
-    <View tw="flex-1 bg-bright-yellow h-screen">
+    <View tw="flex-1 h-screen">
       <SafeAreaView tw="flex-1">
         <SectionList
           contentContainerStyle={{ paddingHorizontal: 10 }}
@@ -105,25 +117,36 @@ function HomeScreen({ navigation }) {
           showsVerticalScrollIndicator={false}
           renderSectionHeader={({ section }) => (
             <>
-              <Text tw="text-2xl font-extrabold text-dark-purple mt-6">
-                {section.title}
-              </Text>
-              {section.current && (
-                <Text>
-                  Time in Location:{" "}
-                  <Clock
-                    element={Text}
-                    format={"h:mm:ssa"}
-                    ticking={true}
-                    timezone={section.timezone}
-                  />
-                </Text>
+              {section.subheading && (
+                <Text tw="text-2xl">{section.subheading}</Text>
               )}
+
+              {section.size == "large" && (
+                <>
+                  <Text tw="text-2xl font-extrabold mt-6">{section.title}</Text>
+                  <Text>
+                    Time in Location:{" "}
+                    <Clock
+                      element={Text}
+                      format={"h:mm:ssa"}
+                      ticking={true}
+                      timezone={section.timezone}
+                    />
+                  </Text>
+                </>
+              )}
+              {section.size == "normal" ||
+                (section.size == "small" && (
+                  <>
+                    <Text tw="text-lg mt-6">{section.title}</Text>
+                  </>
+                ))}
+
               <FlatList
                 horizontal
                 data={section.data}
                 renderItem={({ item }) => (
-                  <ListItem item={item} current={section.current} />
+                  <ListItem item={item} size={section.size} />
                 )}
                 showsHorizontalScrollIndicator={false}
               />
