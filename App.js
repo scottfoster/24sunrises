@@ -30,7 +30,7 @@ function HomeScreen({ navigation }) {
   }, []);
 
   const getData = () => {
-    fetch("https://s3.amazonaws.com/imfoster.com/24sunrises-data3.json", {
+    fetch("https://s3.amazonaws.com/imfoster.com/24sunrises-data.json", {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
