@@ -33,7 +33,6 @@ function HomeScreen({ navigation }) {
         return response.json();
       })
       .then(function (myJson) {
-        console.log(myJson);
         setSunriseData(myJson);
       })
       .catch((error) => {
@@ -50,7 +49,7 @@ function HomeScreen({ navigation }) {
         activeOpacity={1}
         onPress={() => {
           navigation.navigate("Details", {
-            uri: item.uri,
+            image: item.image,
           });
         }}
       >
@@ -59,7 +58,7 @@ function HomeScreen({ navigation }) {
             {size == "large" && (
               <Image
                 source={{
-                  uri: item.uri,
+                  uri: item.image,
                 }}
                 tw="h-80 w-80 rounded-lg"
                 resizeMode="cover"
@@ -69,7 +68,7 @@ function HomeScreen({ navigation }) {
             {size == "normal" && (
               <Image
                 source={{
-                  uri: item.uri,
+                  uri: item.image,
                 }}
                 tw="h-36 w-36 rounded-lg"
                 resizeMode="cover"
@@ -79,7 +78,7 @@ function HomeScreen({ navigation }) {
             {size == "small" && (
               <Image
                 source={{
-                  uri: item.uri,
+                  uri: item.image,
                 }}
                 tw="h-24 w-24 rounded-lg"
                 resizeMode="cover"
@@ -88,19 +87,39 @@ function HomeScreen({ navigation }) {
 
             {size == "large" && (
               <>
-                <View tw="flex flex-row justify-between pt-1">
+                <View tw="flex flex-row justify-between items-center pt-1">
                   <Text tw="font-semibold text-lg">{item.location}</Text>
                   <Moment fromNow element={Text}>
                     {item.time}
                   </Moment>
                 </View>
-                <Text>{item.author}</Text>
+                <Text tw="-mt-0.5">{item.author}</Text>
               </>
             )}
 
-            {size == "normal" && <Text>{item.location}</Text>}
+            {size == "normal" && (
+              <>
+                <View tw="flex flex-row justify-between items-center pt-2">
+                  <Text tw="text-xs font-semibold">{item.location}</Text>
+                  <Text tw="text-xs">
+                    <Moment fromNow element={Text}>
+                      {item.time}
+                    </Moment>
+                  </Text>
+                </View>
+              </>
+            )}
 
-            {size == "small" && <Text>{item.location}</Text>}
+            {size == "small" && (
+              <>
+                <Text tw="text-xs font-semibold">{item.location}</Text>
+                <Text tw="text-xs">
+                  <Moment fromNow element={Text}>
+                    {item.time}
+                  </Moment>
+                </Text>
+              </>
+            )}
           </>
         </View>
       </TouchableOpacity>
@@ -109,21 +128,23 @@ function HomeScreen({ navigation }) {
 
   return (
     <View tw="flex-1 h-screen">
-      <SafeAreaView tw="flex-1">
+      <SafeAreaView tw="flex-1 bg-gray-100">
         <SectionList
-          contentContainerStyle={{ paddingHorizontal: 10 }}
           stickySectionHeadersEnabled={false}
           sections={sunriseData}
           showsVerticalScrollIndicator={false}
           renderSectionHeader={({ section }) => (
             <>
               {section.subheading && (
-                <Text tw="text-2xl">{section.subheading}</Text>
+                <Text tw="text-3xl font-extrabold my-2 px-3">
+                  {section.subheading}
+                </Text>
               )}
 
-              {section.size == "large" && (
-                <>
-                  <Text tw="text-2xl font-extrabold mt-6">{section.title}</Text>
+              <View tw="my-2 px-3 py-2 bg-white">
+                {section.size == "large" && (
+                  <>
+                    {/*
                   <Text>
                     Time in Location:{" "}
                     <Clock
@@ -133,23 +154,30 @@ function HomeScreen({ navigation }) {
                       timezone={section.timezone}
                     />
                   </Text>
-                </>
-              )}
-              {section.size == "normal" ||
-                (section.size == "small" && (
-                  <>
-                    <Text tw="text-lg mt-6">{section.title}</Text>
+                  */}
                   </>
-                ))}
-
-              <FlatList
-                horizontal
-                data={section.data}
-                renderItem={({ item }) => (
-                  <ListItem item={item} size={section.size} />
                 )}
-                showsHorizontalScrollIndicator={false}
-              />
+                {section.size == "normal" && (
+                  <>
+                    <Text tw="text-lg">{section.title}</Text>
+                  </>
+                )}
+
+                {section.size == "small" && (
+                  <>
+                    <Text tw="text-lg">{section.title}</Text>
+                  </>
+                )}
+
+                <FlatList
+                  horizontal
+                  data={section.data}
+                  renderItem={({ item }) => (
+                    <ListItem item={item} size={section.size} />
+                  )}
+                  showsHorizontalScrollIndicator={false}
+                />
+              </View>
             </>
           )}
           renderItem={() => {

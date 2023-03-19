@@ -4,12 +4,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const DetailsScreen = ({ route, navigation }) => {
-  const { uri } = route.params;
+  const { image } = route.params;
   return (
     <View tw="bg-black flex-1 justify-center">
       <Image
         source={{
-          uri: uri,
+          uri: image,
         }}
         tw="h-80 w-auto"
         resizeMode="cover"
