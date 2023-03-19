@@ -7,6 +7,7 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -18,6 +19,15 @@ import Clock from "react-live-clock";
 
 function HomeScreen({ navigation }) {
   const [sunriseData, setSunriseData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+      getData();
+    }, 1000);
+  }, []);
 
   const getData = () => {
     fetch("https://s3.amazonaws.com/imfoster.com/24sunrises-data3.json", {
@@ -32,8 +42,8 @@ function HomeScreen({ navigation }) {
       .then(function (response) {
         return response.json();
       })
-      .then(function (myJson) {
-        setSunriseData(myJson);
+      .then(function (jsonData) {
+        setSunriseData(jsonData);
       })
       .catch((error) => {
         console.error(error);
@@ -87,19 +97,19 @@ function HomeScreen({ navigation }) {
 
             {size == "large" && (
               <>
-                <View tw="flex flex-row justify-between items-center pt-1">
+                <View tw="flex flex-row justify-between items-center">
                   <Text tw="font-semibold text-lg">{item.location}</Text>
-                  <Moment fromNow element={Text}>
-                    {item.time}
-                  </Moment>
+                  <Text>{item.author}</Text>
                 </View>
-                <Text tw="-mt-0.5">{item.author}</Text>
+                <Moment tw="-mt-1" fromNow element={Text}>
+                  {item.time}
+                </Moment>
               </>
             )}
 
             {size == "normal" && (
               <>
-                <View tw="flex flex-row justify-between items-center pt-2">
+                <View tw="break-all">
                   <Text tw="text-xs font-semibold">{item.location}</Text>
                   <Text tw="text-xs">
                     <Moment fromNow element={Text}>
@@ -130,6 +140,9 @@ function HomeScreen({ navigation }) {
     <View tw="flex-1 h-screen">
       <SafeAreaView tw="flex-1 bg-gray-100">
         <SectionList
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           stickySectionHeadersEnabled={false}
           sections={sunriseData}
           showsVerticalScrollIndicator={false}
