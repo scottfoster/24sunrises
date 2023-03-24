@@ -13,6 +13,7 @@
     "@react-navigation/native": "^6.1.5",
     "@react-navigation/native-stack": "^6.9.11",
     "expo": "~47.0.12",
+    "expo-dev-client": "~2.0.1",
     "expo-status-bar": "~1.4.2",
     "moment": "^2.29.4",
     "nativewind": "^2.0.11",

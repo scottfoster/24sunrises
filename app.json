@@ -1,5 +1,6 @@
 {
   "expo": {
+    "owner": "scottfoster",
     "name": "24sunrises",
     "slug": "24sunrises",
     "version": "1.0.0",
@@ -18,7 +19,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.scottfoster.24sunrises"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,6 +30,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "39629b11-87f8-4ce6-be0b-6be89547b276"
+      }
     }
   }
 }
