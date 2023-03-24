@@ -54,6 +54,14 @@ function HomeScreen({ navigation }) {
   }, []);
 
   const ListItem = ({ item, size }) => {
+
+    const listClassNames = [];
+    listClassNames.push("mt-2.5");
+    listClassNames.push("mr-2.5");
+    if (size == "large") listClassNames.push("w-80");
+    if (size == "normal") listClassNames.push("w-36");
+    if (size == "small") listClassNames.push("w-24");
+
     return (
       <TouchableOpacity
         activeOpacity={1}
@@ -63,7 +71,7 @@ function HomeScreen({ navigation }) {
           });
         }}
       >
-        <View tw="mt-2.5 mr-2.5">
+        <View tw={listClassNames.join(" ")}>
           <>
             {size == "large" && (
               <Image
@@ -108,8 +116,7 @@ function HomeScreen({ navigation }) {
             )}
 
             {size == "normal" && (
-              <>
-                <View tw="break-all">
+                <View tw="break-words">
                   <Text tw="text-xs font-semibold">{item.location}</Text>
                   <Text tw="text-xs">
                     <Moment fromNow element={Text}>
@@ -117,17 +124,18 @@ function HomeScreen({ navigation }) {
                     </Moment>
                   </Text>
                 </View>
-              </>
             )}
 
             {size == "small" && (
               <>
+                <View tw="break-words">
                 <Text tw="text-xs font-semibold">{item.location}</Text>
                 <Text tw="text-xs">
                   <Moment fromNow element={Text}>
                     {item.time}
                   </Moment>
                 </Text>
+                </View>
               </>
             )}
           </>
