@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   RefreshControl,
+  Button,
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -20,9 +21,11 @@ import Clock from "react-live-clock";
 function HomeScreen({ navigation }) {
   const [sunriseData, setSunriseData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [validFile, setValidFile] = useState(true);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
+    setValidFile(true);
     setTimeout(() => {
       setRefreshing(false);
       getData();
@@ -30,7 +33,7 @@ function HomeScreen({ navigation }) {
   }, []);
 
   const getData = () => {
-    fetch("https://s3.amazonaws.com/imfoster.com/24sunrises-data.json", {
+    fetch("https://24sunrises-data.s3.amazonaws.com/sunrises.json", {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -46,7 +49,7 @@ function HomeScreen({ navigation }) {
         setSunriseData(jsonData);
       })
       .catch((error) => {
-        console.error(error);
+        setValidFile(false);
       });
   };
   useEffect(() => {
@@ -54,7 +57,6 @@ function HomeScreen({ navigation }) {
   }, []);
 
   const ListItem = ({ item, size }) => {
-
     const listClassNames = [];
     listClassNames.push("mt-2.5");
     listClassNames.push("mr-2.5");
@@ -116,6 +118,18 @@ function HomeScreen({ navigation }) {
             )}
 
             {size == "normal" && (
+              <View tw="break-words">
+                <Text tw="text-xs font-semibold">{item.location}</Text>
+                <Text tw="text-xs">
+                  <Moment fromNow element={Text}>
+                    {item.time}
+                  </Moment>
+                </Text>
+              </View>
+            )}
+
+            {size == "small" && (
+              <>
                 <View tw="break-words">
                   <Text tw="text-xs font-semibold">{item.location}</Text>
                   <Text tw="text-xs">
@@ -123,18 +137,6 @@ function HomeScreen({ navigation }) {
                       {item.time}
                     </Moment>
                   </Text>
-                </View>
-            )}
-
-            {size == "small" && (
-              <>
-                <View tw="break-words">
-                <Text tw="text-xs font-semibold">{item.location}</Text>
-                <Text tw="text-xs">
-                  <Moment fromNow element={Text}>
-                    {item.time}
-                  </Moment>
-                </Text>
                 </View>
               </>
             )}
@@ -147,64 +149,59 @@ function HomeScreen({ navigation }) {
   return (
     <View tw="flex-1 h-screen">
       <SafeAreaView tw="flex-1 bg-gray-100">
-        <SectionList
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          stickySectionHeadersEnabled={false}
-          sections={sunriseData}
-          showsVerticalScrollIndicator={false}
-          renderSectionHeader={({ section }) => (
-            <>
-              {section.subheading && (
-                <Text tw="text-3xl font-extrabold my-2 px-3">
-                  {section.subheading}
-                </Text>
-              )}
-
-              <View tw="my-2 px-3 py-2 bg-white">
-                {section.size == "large" && (
-                  <>
-                    {/*
-                  <Text>
-                    Time in Location:{" "}
-                    <Clock
-                      element={Text}
-                      format={"h:mm:ssa"}
-                      ticking={true}
-                      timezone={section.timezone}
-                    />
+        {validFile ? (
+          <SectionList
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            stickySectionHeadersEnabled={false}
+            sections={sunriseData}
+            showsVerticalScrollIndicator={false}
+            renderSectionHeader={({ section }) => (
+              <>
+                {section.subheading && (
+                  <Text tw="text-3xl font-extrabold my-2 px-3">
+                    {section.subheading}
                   </Text>
-                  */}
-                  </>
-                )}
-                {section.size == "normal" && (
-                  <>
-                    <Text tw="text-lg">{section.title}</Text>
-                  </>
                 )}
 
-                {section.size == "small" && (
-                  <>
-                    <Text tw="text-lg">{section.title}</Text>
-                  </>
-                )}
-
-                <FlatList
-                  horizontal
-                  data={section.data}
-                  renderItem={({ item }) => (
-                    <ListItem item={item} size={section.size} />
+                <View tw="my-2 px-3 py-2 bg-white">
+                  {section.size == "normal" && (
+                    <>
+                      <Text tw="text-lg">{section.title}</Text>
+                    </>
                   )}
-                  showsHorizontalScrollIndicator={false}
-                />
-              </View>
-            </>
-          )}
-          renderItem={() => {
-            return null;
-          }}
-        />
+
+                  {section.size == "small" && (
+                    <>
+                      <Text tw="text-lg">{section.title}</Text>
+                    </>
+                  )}
+
+                  <FlatList
+                    horizontal
+                    data={section.data}
+                    renderItem={({ item }) => (
+                      <ListItem item={item} size={section.size} />
+                    )}
+                    showsHorizontalScrollIndicator={false}
+                  />
+                </View>
+              </>
+            )}
+            renderItem={() => {
+              return null;
+            }}
+          />
+        ) : (
+          <View tw="h-screen v-screen flex items-center justify-center">
+            <Text tw="text-center font-semibold text-xl">
+              Unable to connect to server. Please try again in a few minutes or
+              check your internet connection.
+            </Text>
+            <Button onPress={onRefresh} title="Try again" />
+          </View>
+        )}
       </SafeAreaView>
     </View>
   );
