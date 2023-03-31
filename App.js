@@ -15,9 +15,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DetailsScreen from "./screens/DetailsScreen";
 
-import Moment from "react-moment";
-import Clock from "react-live-clock";
-
 function HomeScreen({ navigation }) {
   const [sunriseData, setSunriseData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -33,7 +30,7 @@ function HomeScreen({ navigation }) {
   }, []);
 
   const getData = () => {
-    fetch("https://24sunrises-data.s3.amazonaws.com/sunrises.json", {
+    fetch("https://24sunrises-data.s3.amazonaws.com/sunrises-new.json", {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -109,11 +106,11 @@ function HomeScreen({ navigation }) {
               <>
                 <View tw="flex flex-row justify-between items-center">
                   <Text tw="font-semibold text-lg">{item.location}</Text>
-                  <Text>{item.author}</Text>
+                  <Text>{item.username}</Text>
                 </View>
-                <Moment tw="-mt-1" fromNow element={Text}>
+                <Text tw="-mt-1">
                   {item.time}
-                </Moment>
+                </Text>
               </>
             )}
 
@@ -121,9 +118,9 @@ function HomeScreen({ navigation }) {
               <View tw="break-words">
                 <Text tw="text-xs font-semibold">{item.location}</Text>
                 <Text tw="text-xs">
-                  <Moment fromNow element={Text}>
+                  <Text>
                     {item.time}
-                  </Moment>
+                  </Text>
                 </Text>
               </View>
             )}
@@ -133,9 +130,9 @@ function HomeScreen({ navigation }) {
                 <View tw="break-words">
                   <Text tw="text-xs font-semibold">{item.location}</Text>
                   <Text tw="text-xs">
-                    <Moment fromNow element={Text}>
+
                       {item.time}
-                    </Moment>
+
                   </Text>
                 </View>
               </>
@@ -194,7 +191,7 @@ function HomeScreen({ navigation }) {
             }}
           />
         ) : (
-          <View tw="h-screen v-screen flex items-center justify-center">
+          <View tw="h-screen v-screen flex items-center justify-center p-5">
             <Text tw="text-center font-semibold text-xl">
               Unable to connect to server. Please try again in a few minutes or
               check your internet connection.
@@ -222,7 +219,7 @@ function App() {
         <Stack.Screen
           name="24sunrises"
           options={{
-            headerTintColor: "#805690",
+            headerTintColor: "#000",
             title: "24sunrises",
             headerTransparent: true,
             headerShadowVisible: false,

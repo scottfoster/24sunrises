@@ -20,7 +20,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.scottfoster.24sunrises"
+      "bundleIdentifier": "com.scottfoster.24sunrises",
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
