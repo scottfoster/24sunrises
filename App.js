@@ -14,6 +14,8 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DetailsScreen from "./screens/DetailsScreen";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { FontAwesome } from "@expo/vector-icons";
 
 function HomeScreen({ navigation }) {
   const [sunriseData, setSunriseData] = useState([]);
@@ -65,8 +67,12 @@ function HomeScreen({ navigation }) {
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => {
-          navigation.navigate("Details", {
+          navigation.navigate("Photo Details", {
             image: item.image,
+            username: item.username,
+            user_image: item.user_image,
+            location: item.location,
+            time: item.time,
           });
         }}
       >
@@ -108,9 +114,7 @@ function HomeScreen({ navigation }) {
                   <Text tw="font-semibold text-lg">{item.location}</Text>
                   <Text>{item.username}</Text>
                 </View>
-                <Text tw="-mt-1">
-                  {item.time}
-                </Text>
+                <Text tw="-mt-1">{item.time}</Text>
               </>
             )}
 
@@ -118,9 +122,7 @@ function HomeScreen({ navigation }) {
               <View tw="break-words">
                 <Text tw="text-xs font-semibold">{item.location}</Text>
                 <Text tw="text-xs">
-                  <Text>
-                    {item.time}
-                  </Text>
+                  <Text>{item.time}</Text>
                 </Text>
               </View>
             )}
@@ -129,11 +131,7 @@ function HomeScreen({ navigation }) {
               <>
                 <View tw="break-words">
                   <Text tw="text-xs font-semibold">{item.location}</Text>
-                  <Text tw="text-xs">
-
-                      {item.time}
-
-                  </Text>
+                  <Text tw="text-xs">{item.time}</Text>
                 </View>
               </>
             )}
@@ -213,7 +211,7 @@ function App() {
         screenOptions={{
           animation: "none",
           headerBackTitle: "Back",
-          headerTintColor: "#fff",
+          headerTintColor: "#000",
         }}
       >
         <Stack.Screen
@@ -223,12 +221,21 @@ function App() {
             title: "24sunrises",
             headerTransparent: true,
             headerShadowVisible: false,
+            headerRight: () => (
+              <FontAwesome
+                onPress={() => alert("questions")}
+                name="question"
+                size={24}
+                color="black"
+              />
+            ),
           }}
           component={HomeScreen}
         />
         <Stack.Screen
-          name="Details"
+          name="Photo Details"
           options={{
+            headerTintColor: "#fff",
             headerStyle: {
               backgroundColor: "#000",
             },
