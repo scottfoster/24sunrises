@@ -14,7 +14,6 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DetailsScreen from "./screens/DetailsScreen";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { FontAwesome } from "@expo/vector-icons";
 
 function HomeScreen({ navigation }) {
@@ -73,6 +72,7 @@ function HomeScreen({ navigation }) {
             user_image: item.user_image,
             location: item.location,
             time: item.time,
+            points: item.points,
           });
         }}
       >
@@ -110,28 +110,55 @@ function HomeScreen({ navigation }) {
 
             {size == "large" && (
               <>
-                <View tw="flex flex-row justify-between items-center">
-                  <Text tw="font-semibold text-lg">{item.location}</Text>
-                  <Text>{item.username}</Text>
+                <View tw="flex flex-row pt-1">
+                  <View tw="w-4/6">
+                    <Text tw="font-semibold text-lg leading-5">
+                      {item.location}
+                    </Text>
+                    <View>
+                      <View tw="flex flex-row items-center justify-start h-5">
+                        <FontAwesome name="user" size={14} color="black" />
+                        <Text tw="text-sm ml-0.5">{item.username}</Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View tw="w-2/6">
+                    <Text tw="font-semibold text-lg leading-5 text-right">
+                      {item.time}
+                    </Text>
+                    <View tw="flex flex-row items-center justify-end h-5">
+                      <FontAwesome name="heart" size={14} color="red" />
+                      <Text tw="text-sm ml-0.5">{item.points}</Text>
+                    </View>
+                  </View>
                 </View>
-                <Text tw="-mt-1">{item.time}</Text>
               </>
             )}
 
             {size == "normal" && (
-              <View tw="break-words">
-                <Text tw="text-xs font-semibold">{item.location}</Text>
-                <Text tw="text-xs">
-                  <Text>{item.time}</Text>
-                </Text>
-              </View>
+              <>
+                <View tw="pt-1">
+                  <Text tw="text-xs font-semibold">{item.location}</Text>
+                  <Text tw="text-xs">
+                    <Text>{item.time} / </Text>
+                    <FontAwesome name="heart" size={10} color="red" />
+                    <Text> </Text>
+                    <Text>{item.points}</Text>
+                  </Text>
+                </View>
+              </>
             )}
 
             {size == "small" && (
               <>
-                <View tw="break-words">
+                <View tw="pt-1">
                   <Text tw="text-xs font-semibold">{item.location}</Text>
-                  <Text tw="text-xs">{item.time}</Text>
+                  <Text tw="text-xs">
+                    <Text>{item.time} / </Text>
+                    <FontAwesome name="heart" size={10} color="red" />
+                    <Text> </Text>
+                    <Text>{item.points}</Text>
+                  </Text>
                 </View>
               </>
             )}
