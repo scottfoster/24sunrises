@@ -1,3 +1,5 @@
+/* eas build; eas submit --platform ios */
+
 import React, { useState, useEffect } from "react";
 import {
   Text,
@@ -9,13 +11,13 @@ import {
   TouchableOpacity,
   RefreshControl,
   Button,
+  Linking,
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DetailsScreen from "./screens/DetailsScreen";
-import HelpScreen from "./screens/HelpScreen";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 function HomeScreen({ navigation }) {
   const [sunriseData, setSunriseData] = useState([]);
@@ -118,7 +120,7 @@ function HomeScreen({ navigation }) {
                     </Text>
                     <View>
                       <View tw="flex flex-row items-center justify-start h-5">
-                        <FontAwesome name="user" size={14} color="black" />
+                        <FontAwesome5 name="user" size={14} color="black" />
                         <Text tw="text-sm ml-0.5">{item.username}</Text>
                       </View>
                     </View>
@@ -128,7 +130,7 @@ function HomeScreen({ navigation }) {
                       {item.time}
                     </Text>
                     <View tw="flex flex-row items-center justify-end h-5">
-                      <FontAwesome name="heart" size={14} color="red" />
+                      <FontAwesome5 name="heart" size={14} color="red" />
                       <Text tw="text-sm ml-0.5">{item.points}</Text>
                     </View>
                   </View>
@@ -141,8 +143,8 @@ function HomeScreen({ navigation }) {
                 <View tw="pt-1">
                   <Text tw="text-xs font-semibold">{item.location}</Text>
                   <Text tw="text-xs">
-                    <Text>{item.time} / </Text>
-                    <FontAwesome name="heart" size={10} color="red" />
+                    <Text>{item.time} </Text>
+                    <FontAwesome5 name="heart" size={10} color="red" />
                     <Text> </Text>
                     <Text>{item.points}</Text>
                   </Text>
@@ -155,8 +157,8 @@ function HomeScreen({ navigation }) {
                 <View tw="pt-1">
                   <Text tw="text-xs font-semibold">{item.location}</Text>
                   <Text tw="text-xs">
-                    <Text>{item.time} / </Text>
-                    <FontAwesome name="heart" size={10} color="red" />
+                    <Text>{item.time} </Text>
+                    <FontAwesome5 name="heart" size={10} color="red" />
                     <Text> </Text>
                     <Text>{item.points}</Text>
                   </Text>
@@ -183,9 +185,15 @@ function HomeScreen({ navigation }) {
             renderSectionHeader={({ section }) => (
               <>
                 {section.subheading && (
-                  <Text tw="text-3xl font-extrabold my-2 px-3">
-                    {section.subheading}
-                  </Text>
+                  <>
+                    <Text tw="text-3xl font-extrabold my-2 px-3">
+                      {section.subheading}
+
+                      <View tw="pl-4 pt-1">
+                        <FontAwesome5 name="sun" size={24} color="#F6BE00" />
+                      </View>
+                    </Text>
+                  </>
                 )}
 
                 <View tw="my-2 px-3 py-2 bg-white">
@@ -250,9 +258,13 @@ function App() {
             headerTransparent: true,
             headerShadowVisible: false,
             headerRight: () => (
-              <FontAwesome
-                onPress={() => navigation.navigate("Help")}
-                name="question"
+              <FontAwesome5
+                onPress={() =>
+                  Linking.openURL(
+                    "mailto:twentyfoursunrises@gmail.com?subject=Question/Comment About 24sunrises"
+                  )
+                }
+                name="envelope"
                 size={24}
                 color="black"
               />
@@ -270,17 +282,6 @@ function App() {
             headerShadowVisible: false,
           }}
           component={DetailsScreen}
-        />
-        <Stack.Screen
-          name="Help"
-          options={{
-            headerTintColor: "#fff",
-            headerStyle: {
-              backgroundColor: "#000",
-            },
-            headerShadowVisible: false,
-          }}
-          component={HelpScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
