@@ -14,6 +14,7 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DetailsScreen from "./screens/DetailsScreen";
+import HelpScreen from "./screens/HelpScreen";
 import { FontAwesome } from "@expo/vector-icons";
 
 function HomeScreen({ navigation }) {
@@ -235,28 +236,28 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={{
+        screenOptions={({ route, navigation }) => ({
           animation: "none",
           headerBackTitle: "Back",
           headerTintColor: "#000",
-        }}
+        })}
       >
         <Stack.Screen
           name="24sunrises"
-          options={{
+          options={({ route, navigation }) => ({
             headerTintColor: "#000",
             title: "24sunrises",
             headerTransparent: true,
             headerShadowVisible: false,
             headerRight: () => (
               <FontAwesome
-                onPress={() => alert("questions")}
+                onPress={() => navigation.navigate("Help")}
                 name="question"
                 size={24}
                 color="black"
               />
             ),
-          }}
+          })}
           component={HomeScreen}
         />
         <Stack.Screen
@@ -269,6 +270,17 @@ function App() {
             headerShadowVisible: false,
           }}
           component={DetailsScreen}
+        />
+        <Stack.Screen
+          name="Help"
+          options={{
+            headerTintColor: "#fff",
+            headerStyle: {
+              backgroundColor: "#000",
+            },
+            headerShadowVisible: false,
+          }}
+          component={HelpScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
