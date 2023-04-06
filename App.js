@@ -76,6 +76,7 @@ function HomeScreen({ navigation }) {
             location: item.location,
             time: item.time,
             points: item.points,
+            source: item.source
           });
         }}
       >

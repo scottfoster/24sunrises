@@ -3,7 +3,7 @@ import { View, Image, Text } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 
 const DetailsScreen = ({ route, navigation }) => {
-  const { location, user_image, image, username, time, points } = route.params;
+  const { location, user_image, image, username, time, points, source } = route.params;
   return (
     <View tw="bg-black flex-1 justify-center align-items">
       <View tw="flex flex-row pt-1">
@@ -16,7 +16,10 @@ const DetailsScreen = ({ route, navigation }) => {
               tw="h-7 w-7 mr-2"
               resizeMode="cover"
             />
-            <Text tw="text-white font-semibold text-lg">{username}</Text>
+            <View tw="flex flex-row">
+              <Text tw="text-white font-semibold text-lg">{username}</Text>
+              <Text tw="text-white italic text-lg"> on {source}</Text>
+            </View>
           </View>
         </View>
         <View tw="w-2/6">
