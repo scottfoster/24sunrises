@@ -3,7 +3,8 @@ import { View, Image, Text } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 
 const DetailsScreen = ({ route, navigation }) => {
-  const { location, user_image, image, username, time, points, source } = route.params;
+  const { location, user_image, image, username, time, points, source } =
+    route.params;
   return (
     <View tw="bg-black flex-1 justify-center align-items">
       <View tw="flex flex-row pt-1">
@@ -35,10 +36,14 @@ const DetailsScreen = ({ route, navigation }) => {
         resizeMode="cover"
       />
       <View tw="flex flex-row justify-between items-center pt-1">
-        <Text tw="text-white font-semibold text-lg">{location}</Text>
-        <View tw="flex flex-row items-center justify-end h-5">
-          <FontAwesome name="heart" size={14} color="red" />
-          <Text tw="text-sm ml-0.5 text-white">{points}</Text>
+        <View tw="w-4/6">
+          <Text tw="text-white font-semibold text-lg">{location}</Text>
+        </View>
+        <View tw="w-2/6">
+          <View tw="flex flex-row items-center justify-end h-5">
+            <FontAwesome name="heart" size={14} color="red" />
+            <Text tw="text-sm ml-0.5 text-white">{points}</Text>
+          </View>
         </View>
       </View>
     </View>

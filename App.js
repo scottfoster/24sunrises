@@ -76,7 +76,7 @@ function HomeScreen({ navigation }) {
             location: item.location,
             time: item.time,
             points: item.points,
-            source: item.source
+            source: item.source,
           });
         }}
       >
@@ -122,7 +122,9 @@ function HomeScreen({ navigation }) {
                     <View>
                       <View tw="flex flex-row items-center justify-start h-5">
                         <FontAwesome5 name="user" size={14} color="black" />
-                        <Text tw="text-sm ml-0.5">{item.username}</Text>
+                        <Text tw="text-sm ml-0.5">
+                          {item.username} on {item.source}
+                        </Text>
                       </View>
                     </View>
                   </View>
@@ -189,7 +191,6 @@ function HomeScreen({ navigation }) {
                   <>
                     <Text tw="text-3xl font-extrabold my-2 px-3">
                       {section.subheading}
-
                       <View tw="pl-4 pt-1">
                         <FontAwesome5 name="sun" size={24} color="#F6BE00" />
                       </View>
