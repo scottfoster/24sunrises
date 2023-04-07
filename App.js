@@ -242,6 +242,10 @@ function HomeScreen({ navigation }) {
 
 const Stack = createNativeStackNavigator();
 
+function HeaderTitle() {
+  return <Image source={require("./assets/logo.png")} />;
+}
+
 function App() {
   return (
     <NavigationContainer>
@@ -257,8 +261,9 @@ function App() {
           options={({ route, navigation }) => ({
             headerTintColor: "#000",
             title: "24sunrises",
-            headerTransparent: true,
-            headerShadowVisible: false,
+            headerTransparent: false,
+            headerShadowVisible: true,
+            headerTitle: () => <HeaderTitle />,
             headerRight: () => (
               <FontAwesome5
                 onPress={() =>
