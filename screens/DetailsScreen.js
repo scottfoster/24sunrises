@@ -6,7 +6,7 @@ const DetailsScreen = ({ route, navigation }) => {
   const { location, user_image, image, username, time, points, source } =
     route.params;
   return (
-    <View tw="bg-black flex-1 justify-center align-items">
+    <View tw="bg-black flex-1 justify-center align-items p-0.5">
       <View tw="flex flex-row pt-1">
         <View tw="w-4/6">
           <View tw="flex flex-row pb-2">
@@ -14,7 +14,7 @@ const DetailsScreen = ({ route, navigation }) => {
               source={{
                 uri: user_image,
               }}
-              tw="h-7 w-7 mr-2"
+              tw="h-7 w-7 mr-2 rounded-lg"
               resizeMode="cover"
             />
             <View tw="flex flex-row">
@@ -32,7 +32,7 @@ const DetailsScreen = ({ route, navigation }) => {
         source={{
           uri: image,
         }}
-        tw="h-2/3 w-auto"
+        tw="h-2/3 w-auto rounded-lg"
         resizeMode="cover"
       />
       <View tw="flex flex-row justify-between items-center pt-1">
