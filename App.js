@@ -73,6 +73,7 @@ function HomeScreen({ navigation }) {
             image: item.image,
             username: item.username,
             user_image: item.user_image,
+            user_profile_url: item.user_profile_url,
             location: item.location,
             time: item.time,
             points: item.points,
@@ -123,7 +124,7 @@ function HomeScreen({ navigation }) {
                       <View tw="flex flex-row items-center justify-start h-5">
                         <FontAwesome5 name="user" size={14} color="black" />
                         <Text tw="text-sm ml-0.5">
-                          {item.username} on {item.source}
+                          {item.username}
                         </Text>
                       </View>
                     </View>

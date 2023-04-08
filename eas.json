@@ -24,6 +24,12 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "scott@imfoster.com",
+        "ascAppId": "6446752901",
+        "appleTeamId": "8PML37YH4W"
+      }
+    }
   }
 }

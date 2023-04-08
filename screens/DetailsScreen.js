@@ -1,32 +1,45 @@
 import * as React from "react";
-import { View, Image, Text } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { View, Image, Text, TouchableOpacity, Alert } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
+import * as WebBrowser from "expo-web-browser";
 
 const DetailsScreen = ({ route, navigation }) => {
-  const { location, user_image, image, username, time, points, source } =
+  const { location, user_image, user_profile_url, image, username, time, points, source } =
     route.params;
   return (
     <View tw="bg-black flex-1 justify-center align-items p-0.5">
-      <View tw="flex flex-row pt-1">
-        <View tw="w-4/6">
-          <View tw="flex flex-row pb-2">
-            <Image
-              source={{
-                uri: user_image,
-              }}
-              tw="h-7 w-7 mr-2 rounded-lg"
-              resizeMode="cover"
-            />
-            <View tw="flex flex-row">
-              <Text tw="text-white font-semibold text-lg">{username}</Text>
-              <Text tw="text-white italic text-lg"> on {source}</Text>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => {
+          WebBrowser.openBrowserAsync(user_profile_url);
+        }}
+      >
+        <View tw="flex flex-row pb-2">
+          <View tw="w-4/6 border border-red-500">
+            <View tw="flex flex-row items-center">
+              <Image
+                source={{
+                  uri: user_image,
+                }}
+                tw="h-7 w-7 mr-2 rounded-lg"
+                resizeMode="cover"
+              />
+              <Text tw="text-white font-semibold text-md">
+                {username}
+                <Text tw="italic"> on {source} </Text>
+                <FontAwesome5
+                  name="external-link-alt"
+                  size={14}
+                  color="white"
+                />
+              </Text>
             </View>
           </View>
+          <View tw="w-2/6 border border-red-500 justify-center items-end">
+            <Text tw="text-white text-md text-right">{time}</Text>
+          </View>
         </View>
-        <View tw="w-2/6">
-          <Text tw="text-white text-lg text-right">{time}</Text>
-        </View>
-      </View>
+      </TouchableOpacity>
 
       <Image
         source={{
@@ -40,9 +53,9 @@ const DetailsScreen = ({ route, navigation }) => {
           <Text tw="text-white font-semibold text-lg">{location}</Text>
         </View>
         <View tw="w-2/6">
-          <View tw="flex flex-row items-center justify-end h-5">
-            <FontAwesome name="heart" size={14} color="red" />
-            <Text tw="text-sm ml-0.5 text-white">{points}</Text>
+          <View tw="flex flex-row justify-end items-center">
+            <FontAwesome5 name="heart" size={14} color="red" />
+            <Text tw="text-sm ml-0.5 text-white text-lg font-semibold">{points}</Text>
           </View>
         </View>
       </View>
