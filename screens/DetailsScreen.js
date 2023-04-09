@@ -7,7 +7,6 @@ import {
   Share,
 } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
-import * as WebBrowser from "expo-web-browser";
 
 const DetailsScreen = ({ route, navigation }) => {
   const {
