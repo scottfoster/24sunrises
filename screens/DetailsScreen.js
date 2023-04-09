@@ -1,11 +1,25 @@
 import * as React from "react";
-import { View, Image, Text, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  Share,
+} from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
 
 const DetailsScreen = ({ route, navigation }) => {
-  const { location, user_image, user_profile_url, image, username, time, points, source } =
-    route.params;
+  const {
+    location,
+    user_image,
+    user_profile_url,
+    image,
+    username,
+    time,
+    points,
+    source,
+  } = route.params;
   return (
     <View tw="bg-black flex-1 justify-center align-items p-0.5">
       <TouchableOpacity
@@ -15,7 +29,7 @@ const DetailsScreen = ({ route, navigation }) => {
         }}
       >
         <View tw="flex flex-row pb-2">
-          <View tw="w-4/6 border border-red-500">
+          <View tw="w-4/6">
             <View tw="flex flex-row items-center">
               <Image
                 source={{
@@ -28,14 +42,14 @@ const DetailsScreen = ({ route, navigation }) => {
                 {username}
                 <Text tw="italic"> on {source} </Text>
                 <FontAwesome5
-                  name="external-link-alt"
+                  name="arrow-right"
                   size={14}
                   color="white"
                 />
               </Text>
             </View>
           </View>
-          <View tw="w-2/6 border border-red-500 justify-center items-end">
+          <View tw="w-2/6 justify-center items-end">
             <Text tw="text-white text-md text-right">{time}</Text>
           </View>
         </View>
@@ -55,7 +69,20 @@ const DetailsScreen = ({ route, navigation }) => {
         <View tw="w-2/6">
           <View tw="flex flex-row justify-end items-center">
             <FontAwesome5 name="heart" size={14} color="red" />
-            <Text tw="text-sm ml-0.5 text-white text-lg font-semibold">{points}</Text>
+            <Text tw="text-sm ml-1 mr-1 text-white text-lg font-semibold">
+              {points}
+            </Text>
+            <FontAwesome5
+              onPress={() =>
+                Share.share({
+                  url: image,
+                })
+              }
+              tw="ml-2"
+              name="external-link-alt"
+              size={14}
+              color="white"
+            />
           </View>
         </View>
       </View>
