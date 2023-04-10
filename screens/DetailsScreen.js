@@ -1,12 +1,7 @@
 import * as React from "react";
-import {
-  View,
-  Image,
-  Text,
-  TouchableOpacity,
-  Share,
-} from "react-native";
+import { View, Image, Text, TouchableOpacity, Share } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
+import * as WebBrowser from "expo-web-browser";
 
 const DetailsScreen = ({ route, navigation }) => {
   const {
@@ -24,7 +19,12 @@ const DetailsScreen = ({ route, navigation }) => {
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => {
-          WebBrowser.openBrowserAsync(user_profile_url);
+          WebBrowser.openBrowserAsync(user_profile_url, {
+            toolbarColor: '#000000',
+            secondaryToolbarColor: '#000000',
+            showTitle: false,
+            dismissButtonStyle: 'close'
+          });
         }}
       >
         <View tw="flex flex-row pb-2">
@@ -40,11 +40,7 @@ const DetailsScreen = ({ route, navigation }) => {
               <Text tw="text-white font-semibold text-md">
                 {username}
                 <Text tw="italic"> on {source} </Text>
-                <FontAwesome5
-                  name="arrow-right"
-                  size={14}
-                  color="white"
-                />
+                <FontAwesome5 name="arrow-right" size={14} color="white" />
               </Text>
             </View>
           </View>

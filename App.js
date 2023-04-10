@@ -265,14 +265,26 @@ function App() {
             headerTransparent: false,
             headerShadowVisible: true,
             headerTitle: () => <HeaderTitle />,
-            headerRight: () => (
+            headerLeft: () => (
               <FontAwesome5
                 onPress={() =>
                   Linking.openURL(
                     "mailto:twentyfoursunrises@gmail.com?subject=Question/Comment About 24sunrises"
-                  )
+                  ).catch(err => {
+                    alert('Something went wrong.')
+                 })
                 }
                 name="envelope"
+                size={24}
+                color="black"
+              />
+            ),
+            headerRight: () => (
+              <FontAwesome5
+                onPress={() =>
+                  alert('The ability to add your own sunrise pictures through the app is coming soon.')
+                }
+                name="plus"
                 size={24}
                 color="black"
               />
