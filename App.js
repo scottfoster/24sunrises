@@ -12,6 +12,7 @@ import {
   RefreshControl,
   Button,
   Linking,
+  Alert
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -244,7 +245,7 @@ function HomeScreen({ navigation }) {
 const Stack = createNativeStackNavigator();
 
 function HeaderTitle() {
-  return <Image source={require("./assets/logo.png")} />;
+  return <Image tw="h-8 w-32" source={require("./assets/logo.png")} />;
 }
 
 function App() {
@@ -271,7 +272,7 @@ function App() {
                   Linking.openURL(
                     "mailto:twentyfoursunrises@gmail.com?subject=Question/Comment About 24sunrises"
                   ).catch(err => {
-                    alert('Something went wrong.')
+                    Alert.alert('Error!', 'Something went wrong.')
                  })
                 }
                 name="envelope"
@@ -282,7 +283,7 @@ function App() {
             headerRight: () => (
               <FontAwesome5
                 onPress={() =>
-                  alert('The ability to add your own sunrise pictures through the app is coming soon.')
+                  Alert.alert('Coming Soon!', 'The ability to add your own sunrise picture through the mobile app is coming soon.')
                 }
                 name="plus"
                 size={24}
