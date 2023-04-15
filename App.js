@@ -280,16 +280,6 @@ function App() {
                 color="black"
               />
             ),
-            headerRight: () => (
-              <FontAwesome5
-                onPress={() =>
-                  Alert.alert('Coming Soon!', 'The ability to add your own sunrise picture through the mobile app is coming soon.')
-                }
-                name="plus"
-                size={24}
-                color="black"
-              />
-            ),
           })}
           component={HomeScreen}
         />
