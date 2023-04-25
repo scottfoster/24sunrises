@@ -12,29 +12,34 @@ import {
   RefreshControl,
   Button,
   Linking,
-  Alert
+  Alert,
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DetailsScreen from "./screens/DetailsScreen";
+import AddPhotoScreen from "./screens/AddPhotoScreen";
 import { FontAwesome5 } from "@expo/vector-icons";
+import * as Location from "expo-location";
 
 function HomeScreen({ navigation }) {
   const [sunriseData, setSunriseData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [validFile, setValidFile] = useState(true);
+  const [utcOffset, setUTCOffset] = useState(null);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setValidFile(true);
     setTimeout(() => {
       setRefreshing(false);
-      getData();
+      getSunriseData();
     }, 1000);
   }, []);
 
-  const getData = () => {
+  const getSunriseData = () => {
+    console.log("getSunriseData");
+
     fetch("https://24sunrises-data.s3.amazonaws.com/sunrises-new.json", {
       headers: {
         "Content-Type": "application/json",
@@ -49,14 +54,61 @@ function HomeScreen({ navigation }) {
       })
       .then(function (jsonData) {
         setSunriseData(jsonData);
+        console.log("setSunriseData");
       })
       .catch((error) => {
         setValidFile(false);
       });
   };
+
+  const getUserUTC = () => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      console.log("status", status);
+      if (status === "granted") {
+        console.log("getUserUTC");
+        let location = await Location.getCurrentPositionAsync({});
+
+        fetch(
+          "https://0u0b4i5z1h.execute-api.us-east-1.amazonaws.com/getutc?latitude=" +
+            location.coords.latitude +
+            "&longitude=" +
+            location.coords.longitude,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "Cache-Control": "no-cache, no-store, must-revalidate",
+              Pragma: "no-cache",
+              Expires: 0,
+            },
+          }
+        )
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (jsonData) {
+            setUTCOffset(jsonData.offset);
+            console.log("setUTCOffset");
+            getSunriseData();
+          });
+      } else {
+        console.log("not granted");
+        getSunriseData();
+      }
+    })();
+  };
+
   useEffect(() => {
-    getData();
+    getUserUTC();
   }, []);
+
+  const highlightSection = (section) => {
+    if (utcOffset == section.offset) {
+      return "my-2 px-3 py-2 bg-yellow-100";
+    }
+    return "my-2 px-3 py-2 bg-white";
+  };
 
   const ListItem = ({ item, size }) => {
     const listClassNames = [];
@@ -124,9 +176,7 @@ function HomeScreen({ navigation }) {
                     <View>
                       <View tw="flex flex-row items-center justify-start h-5">
                         <FontAwesome5 name="user" size={14} color="black" />
-                        <Text tw="text-sm ml-0.5">
-                          {item.username}
-                        </Text>
+                        <Text tw="text-sm ml-0.5">{item.username}</Text>
                       </View>
                     </View>
                   </View>
@@ -200,7 +250,7 @@ function HomeScreen({ navigation }) {
                   </>
                 )}
 
-                <View tw="my-2 px-3 py-2 bg-white">
+                <View tw={highlightSection(section)}>
                   {section.size == "normal" && (
                     <>
                       <Text tw="text-lg">{section.title}</Text>
@@ -271,11 +321,19 @@ function App() {
                 onPress={() =>
                   Linking.openURL(
                     "mailto:twentyfoursunrises@gmail.com?subject=Question/Comment About 24sunrises"
-                  ).catch(err => {
-                    Alert.alert('Error!', 'Something went wrong.')
-                 })
+                  ).catch((err) => {
+                    Alert.alert("Error!", "Something went wrong.");
+                  })
                 }
                 name="envelope"
+                size={24}
+                color="black"
+              />
+            ),
+            headerRight: () => (
+              <FontAwesome5
+                onPress={() => navigation.navigate("Add Photo")}
+                name="plus"
                 size={24}
                 color="black"
               />
@@ -293,6 +351,17 @@ function App() {
             headerShadowVisible: false,
           }}
           component={DetailsScreen}
+        />
+        <Stack.Screen
+          name="Add Photo"
+          options={{
+            headerTintColor: "#fff",
+            headerStyle: {
+              backgroundColor: "#000",
+            },
+            headerShadowVisible: false,
+          }}
+          component={AddPhotoScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
