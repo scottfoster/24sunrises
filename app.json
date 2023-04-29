@@ -24,7 +24,7 @@
       },
       "supportsTablet": true,
       "bundleIdentifier": "com.scottfoster.24sunrises",
-      "buildNumber": "14"
+      "buildNumber": "16"
     },
     "android": {
       "adaptiveIcon": {
@@ -50,7 +50,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to show you sunrises that are local to you."
         }
       ]
     ]

@@ -13,6 +13,7 @@ import {
   Button,
   Linking,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -26,6 +27,7 @@ function HomeScreen({ navigation }) {
   const [sunriseData, setSunriseData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [validFile, setValidFile] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [utcOffset, setUTCOffset] = useState(null);
 
   const onRefresh = React.useCallback(() => {
@@ -53,18 +55,20 @@ function HomeScreen({ navigation }) {
         return response.json();
       })
       .then(function (jsonData) {
+        setLoading(false);
         setSunriseData(jsonData);
         console.log("setSunriseData");
       })
       .catch((error) => {
+        setLoading(false);
         setValidFile(false);
       });
   };
 
   const getUserUTC = () => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      console.log("status", status);
+      let { status } = await Location.getForegroundPermissionsAsync();
+      console.log("statusGetUserUTC", status);
       if (status === "granted") {
         console.log("getUserUTC");
         let location = await Location.getCurrentPositionAsync({});
@@ -229,6 +233,12 @@ function HomeScreen({ navigation }) {
   return (
     <View tw="flex-1 h-screen">
       <SafeAreaView tw="flex-1 bg-gray-100">
+        {loading && (
+          <View tw="h-screen v-screen flex items-center justify-center">
+            <ActivityIndicator color="#EDC041" size="large" />
+            <Text tw="text-center text-lg">Gathering Sunrises...</Text>
+          </View>
+        )}
         {validFile ? (
           <SectionList
             refreshControl={
@@ -309,7 +319,7 @@ function App() {
         })}
       >
         <Stack.Screen
-          name="24sunrises"
+          name="Home"
           options={({ route, navigation }) => ({
             headerTintColor: "#000",
             title: "24sunrises",
@@ -331,12 +341,34 @@ function App() {
               />
             ),
             headerRight: () => (
-              <FontAwesome5
-                onPress={() => navigation.navigate("Add Photo")}
-                name="plus"
-                size={24}
-                color="black"
-              />
+              <>
+                <FontAwesome5
+                  onPress={async () => {
+                    let { status } =
+                      await Location.requestForegroundPermissionsAsync();
+                    if (status == "granted") {
+                      navigation.replace("Home");
+                    } else {
+                      Alert.alert(
+                        "Location Error",
+                        "Location services have not been enabled. Please enable them in the settings."
+                      );
+                    }
+                    console.log("statusCheckLocation", status);
+                  }}
+                  name="location-arrow"
+                  size={24}
+                  color="black"
+                />
+                {/*
+                <FontAwesome5
+                  onPress={() => navigation.navigate("Add Photo")}
+                  name="plus"
+                  size={24}
+                  color="black"
+                />
+                */}
+              </>
             ),
           })}
           component={HomeScreen}
