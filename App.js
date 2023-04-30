@@ -22,7 +22,7 @@ import DetailsScreen from "./screens/DetailsScreen";
 import AddPhotoScreen from "./screens/AddPhotoScreen";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Location from "expo-location";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
 
 function HomeScreen({ navigation }) {
   const [sunriseData, setSunriseData] = useState([]);
@@ -30,7 +30,6 @@ function HomeScreen({ navigation }) {
   const [validFile, setValidFile] = useState(true);
   const [loading, setLoading] = useState(true);
   const [utcOffset, setUTCOffset] = useState(null);
-
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -235,7 +234,6 @@ function HomeScreen({ navigation }) {
   return (
     <View tw="flex-1 h-screen">
       <SafeAreaView tw="flex-1 bg-gray-100">
-
         {loading && (
           <View tw="h-screen v-screen flex items-center justify-center">
             <ActivityIndicator color="#EDC041" size="large" />
@@ -364,29 +362,36 @@ function App() {
                   color="black"
                 />
                 <View tw="pl-3">
+                  <FontAwesome5
+                    onPress={async () => {
+                      let result = await ImagePicker.launchImageLibraryAsync({
+                        mediaTypes: ImagePicker.MediaTypeOptions.All,
+                        allowsEditing: true,
+                        aspect: [4, 3],
+                        quality: 1,
+                        base64: true,
+                      }).then((response) => {
+                        if (!response.canceled) {
+                          const image = response.assets[0].base64;
+                          const upload = fetch(
+                            "https://0u0b4i5z1h.execute-api.us-east-1.amazonaws.com/uploadimage",
+                            {
+                              method: "POST",
+                              body: JSON.stringify({ image: image }),
+                            }
+                          );
 
-                <FontAwesome5
-                  onPress={async () => {
+                          console.log("upload", upload);
 
-                    let result = await ImagePicker.launchImageLibraryAsync({
-                      mediaTypes: ImagePicker.MediaTypeOptions.All,
-                      allowsEditing: true,
-                      aspect: [4, 3],
-                      quality: 1,
-                      base64:true
-                    }).then((response) => {
-                      
-                      if (!response.canceled) {
-
-                        // upload image
-                        console.log(response.base64)
-                      }
-                    });
-                  }}
-                  name="camera"
-                  size={24}
-                  color="black"
-                />
+                          // upload image
+                          // console.log(response.base64)
+                        }
+                      });
+                    }}
+                    name="camera"
+                    size={24}
+                    color="black"
+                  />
                 </View>
               </>
             ),
