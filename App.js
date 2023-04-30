@@ -373,12 +373,13 @@ function App() {
                       allowsEditing: true,
                       aspect: [4, 3],
                       quality: 1,
-                      //image data result will contain base64 data
                       base64:true
                     }).then((response) => {
                       
                       if (!response.canceled) {
-                        console.log(response)
+
+                        // upload image
+                        console.log(response.base64)
                       }
                     });
                   }}
