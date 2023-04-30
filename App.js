@@ -22,6 +22,7 @@ import DetailsScreen from "./screens/DetailsScreen";
 import AddPhotoScreen from "./screens/AddPhotoScreen";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import * as ImagePicker from 'expo-image-picker';
 
 function HomeScreen({ navigation }) {
   const [sunriseData, setSunriseData] = useState([]);
@@ -29,6 +30,7 @@ function HomeScreen({ navigation }) {
   const [validFile, setValidFile] = useState(true);
   const [loading, setLoading] = useState(true);
   const [utcOffset, setUTCOffset] = useState(null);
+
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -233,6 +235,7 @@ function HomeScreen({ navigation }) {
   return (
     <View tw="flex-1 h-screen">
       <SafeAreaView tw="flex-1 bg-gray-100">
+
         {loading && (
           <View tw="h-screen v-screen flex items-center justify-center">
             <ActivityIndicator color="#EDC041" size="large" />
@@ -360,14 +363,30 @@ function App() {
                   size={24}
                   color="black"
                 />
-                {/*
+                <View tw="pl-3">
+
                 <FontAwesome5
-                  onPress={() => navigation.navigate("Add Photo")}
-                  name="plus"
+                  onPress={async () => {
+
+                    let result = await ImagePicker.launchImageLibraryAsync({
+                      mediaTypes: ImagePicker.MediaTypeOptions.All,
+                      allowsEditing: true,
+                      aspect: [4, 3],
+                      quality: 1,
+                      //image data result will contain base64 data
+                      base64:true
+                    }).then((response) => {
+                      
+                      if (!response.canceled) {
+                        console.log(response)
+                      }
+                    });
+                  }}
+                  name="camera"
                   size={24}
                   color="black"
                 />
-                */}
+                </View>
               </>
             ),
           })}
