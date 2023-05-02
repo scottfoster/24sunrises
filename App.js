@@ -19,10 +19,10 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DetailsScreen from "./screens/DetailsScreen";
-import AddPhotoScreen from "./screens/AddPhotoScreen";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import * as ImagePicker from "expo-image-picker";
+import { RNS3 } from 'react-native-aws3';
 
 function HomeScreen({ navigation }) {
   const [sunriseData, setSunriseData] = useState([]);
@@ -310,6 +310,35 @@ function HeaderTitle() {
 }
 
 function App() {
+
+  const uploadFile = async function (image) {
+
+
+    console.log('image', image)
+    const file = {
+      uri: image.uri,
+      name: "image.png",
+      type: "image/png",
+    };
+
+    const options = {
+      keyPrefix: "",
+      bucket: "24sunrises-temp",
+      region: "us-east-1",
+      accessKey: "AKIA3PWTTOA6DGBN4XKD",
+      secretKey: "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",
+      successActionStatus: 201,
+    };
+
+    RNS3.put(file, options).then((response) => {
+      console.log('response', response);
+      
+      if (response.status !== 201)
+        throw new Error("Failed to upload image to S3");
+
+    });
+  };
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -367,25 +396,10 @@ function App() {
                       let result = await ImagePicker.launchImageLibraryAsync({
                         mediaTypes: ImagePicker.MediaTypeOptions.All,
                         allowsEditing: true,
-                        aspect: [4, 3],
                         quality: 1,
-                        base64: true,
+                        exif: 1,
                       }).then((response) => {
-                        if (!response.canceled) {
-                          const image = response.assets[0].base64;
-                          const upload = fetch(
-                            "https://0u0b4i5z1h.execute-api.us-east-1.amazonaws.com/uploadimage",
-                            {
-                              method: "POST",
-                              body: JSON.stringify({ image: image }),
-                            }
-                          );
-
-                          console.log("upload", upload);
-
-                          // upload image
-                          // console.log(response.base64)
-                        }
+                        uploadFile(response.assets[0]);
                       });
                     }}
                     name="camera"
@@ -408,17 +422,6 @@ function App() {
             headerShadowVisible: false,
           }}
           component={DetailsScreen}
-        />
-        <Stack.Screen
-          name="Add Photo"
-          options={{
-            headerTintColor: "#fff",
-            headerStyle: {
-              backgroundColor: "#000",
-            },
-            headerShadowVisible: false,
-          }}
-          component={AddPhotoScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
