@@ -14,17 +14,18 @@ import {
   Linking,
   Alert,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DetailsScreen from "./screens/DetailsScreen";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Location from "expo-location";
-import * as ImagePicker from "expo-image-picker";
-import { RNS3 } from 'react-native-aws3';
 
-function HomeScreen({ navigation }) {
+import DetailsScreen from "./screens/DetailsScreen";
+import UploadScreen from "./screens/UploadScreen";
+
+function HomeScreen({ navigation, route }) {
   const [sunriseData, setSunriseData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [validFile, setValidFile] = useState(true);
@@ -310,35 +311,6 @@ function HeaderTitle() {
 }
 
 function App() {
-
-  const uploadFile = async function (image) {
-
-
-    console.log('image', image)
-    const file = {
-      uri: image.uri,
-      name: "image.png",
-      type: "image/png",
-    };
-
-    const options = {
-      keyPrefix: "",
-      bucket: "24sunrises-temp",
-      region: "us-east-1",
-      accessKey: "AKIA3PWTTOA6DGBN4XKD",
-      secretKey: "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",
-      successActionStatus: 201,
-    };
-
-    RNS3.put(file, options).then((response) => {
-      console.log('response', response);
-      
-      if (response.status !== 201)
-        throw new Error("Failed to upload image to S3");
-
-    });
-  };
-
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -392,15 +364,8 @@ function App() {
                 />
                 <View tw="pl-3">
                   <FontAwesome5
-                    onPress={async () => {
-                      let result = await ImagePicker.launchImageLibraryAsync({
-                        mediaTypes: ImagePicker.MediaTypeOptions.All,
-                        allowsEditing: true,
-                        quality: 1,
-                        exif: 1,
-                      }).then((response) => {
-                        uploadFile(response.assets[0]);
-                      });
+                    onPress={() => {
+                      navigation.navigate("Upload Sunrise");
                     }}
                     name="camera"
                     size={24}
@@ -422,6 +387,17 @@ function App() {
             headerShadowVisible: false,
           }}
           component={DetailsScreen}
+        />
+        <Stack.Screen
+          name="Upload Sunrise"
+          options={{
+            headerTintColor: "#fff",
+            headerStyle: {
+              backgroundColor: "#000",
+            },
+            headerShadowVisible: false,
+          }}
+          component={UploadScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
