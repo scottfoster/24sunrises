@@ -7,6 +7,7 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
@@ -15,9 +16,13 @@ import { RNS3 } from "react-native-aws3";
 
 const UploadScreen = ({ route, navigation }) => {
   const [isUploading, setIsUploading] = useState(false);
-  const [showForm, setShowForm] = useState(true);
+  const [showForm, setShowForm] = useState(false);
   const [exif, setExif] = useState(false);
   const [image, setImage] = useState(false);
+
+  const submitImage = () => {
+    alert("here");
+  };
 
   const makeId = (length) => {
     let result = "";
@@ -67,11 +72,8 @@ const UploadScreen = ({ route, navigation }) => {
 
           RNS3.put(file, options).then((s3response) => {
             console.log("s3response", s3response);
-            console.log("image", s3response.body.postResponse);
 
-            if (s3response.status !== 201)
-              throw new Error("Failed to upload image to S3");
-
+            setImage(s3response.body.postResponse.location)
             setIsUploading(false);
             setShowForm(true);
           });
@@ -79,7 +81,7 @@ const UploadScreen = ({ route, navigation }) => {
       });
     };
 
-    // uploadImage();
+    uploadImage();
   }, []);
 
   return (
@@ -92,20 +94,32 @@ const UploadScreen = ({ route, navigation }) => {
 
       {showForm && (
         <View tw="mx-auto my-auto h-screen w-screen flex items-center justify-center">
-          <Text tw="font-bold mb-4 text-xl">Your Image</Text>
+          <Text tw="font-bold mb-4 text-xl">Your Sunrise Picture</Text>
           <Image
             source={{
-              uri: "https://24sunrises-temp.s3.amazonaws.com/z6dviyyjpl.jpg",
+              uri: image,
             }}
             tw="h-3/6 w-5/6 rounded"
             resizeMode="cover"
           />
 
-          <TextInput tw="mt-3" placeholder="name@email.com" />
+          <View tw="mt-3">
+            <Text tw="text-center text-lg">Enter Your Email:</Text>
+            <TextInput
+              tw="-mt-2 text-2xl text-center"
+              placeholder="sunrise@domain.com"
+            />
+          </View>
 
-          <TouchableOpacity>
-            <Button title="Learn More" color="#841584" />
-          </TouchableOpacity>
+          <View tw="mt-5">
+            <TouchableOpacity tw="bg-sky-800 p-3 rounded text-white">
+              <Button
+                title="Submit Image"
+                color="white"
+                onPress={submitImage}
+              ></Button>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </>

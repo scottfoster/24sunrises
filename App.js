@@ -396,6 +396,7 @@ function App() {
               backgroundColor: "#000",
             },
             headerShadowVisible: false,
+            title: null
           }}
           component={UploadScreen}
         />
