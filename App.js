@@ -14,7 +14,6 @@ import {
   Linking,
   Alert,
   ActivityIndicator,
-  Modal,
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -44,7 +43,7 @@ function HomeScreen({ navigation, route }) {
   const getSunriseData = () => {
     console.log("getSunriseData");
 
-    fetch("https://24sunrises-data.s3.amazonaws.com/sunrises-new.json", {
+    fetch("https://24sunrises-data.s3.amazonaws.com/sunrises.json", {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -58,7 +57,7 @@ function HomeScreen({ navigation, route }) {
       })
       .then(function (jsonData) {
         setLoading(false);
-        setSunriseData(jsonData);
+        setSunriseData(jsonData.data);
         console.log("setSunriseData");
       })
       .catch((error) => {
@@ -396,7 +395,7 @@ function App() {
               backgroundColor: "#000",
             },
             headerShadowVisible: false,
-            title: null
+            title: null,
           }}
           component={UploadScreen}
         />

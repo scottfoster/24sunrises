@@ -7,21 +7,29 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
-  Pressable,
+  Alert,
 } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
-import * as WebBrowser from "expo-web-browser";
 import * as ImagePicker from "expo-image-picker";
 import { RNS3 } from "react-native-aws3";
+import CryptoJS from "react-native-crypto-js";
 
 const UploadScreen = ({ route, navigation }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+
   const [exif, setExif] = useState(false);
-  const [image, setImage] = useState(false);
+  const [image, setImage] = useState(
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/SMPTE_Color_Bars.svg/1024px-SMPTE_Color_Bars.svg.png"
+  );
+  const [formSubmit, setFormSubmit] = useState(false);
+  const [formValues, setFormValues] = useState([]);
 
   const submitImage = () => {
-    alert("here");
+    if (!formValues.email) {
+      Alert.alert("Error!", "Please enter an email address.");
+    }
+
+    console.log("exif", exif);
   };
 
   const makeId = (length) => {
@@ -37,6 +45,13 @@ const UploadScreen = ({ route, navigation }) => {
     return result;
   };
 
+  const handleEmailChange = (e) => {
+    setFormValues({
+      ...formValues,
+      ["email"]: e,
+    });
+  };
+
   useEffect(() => {
     const uploadImage = async () => {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -45,43 +60,81 @@ const UploadScreen = ({ route, navigation }) => {
         quality: 1,
         exif: 1,
       }).then((response) => {
-        console.log(response);
         if (response.canceled) {
           navigation.goBack();
         } else {
           setIsUploading(true);
 
-          const fileType = response.assets[0].fileName.split(".")[1];
-          const fileName = (makeId(10) + "." + fileType).toLowerCase();
-          setExif(response.assets[0].exif);
+          fetch("https://24sunrises-data.s3.amazonaws.com/sunrises.json", {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "Cache-Control": "no-cache, no-store, must-revalidate",
+              Pragma: "no-cache",
+              Expires: 0,
+            },
+          })
+            .then(function (response2) {
+              return response2.json();
+            })
+            .then(function (jsonData) {
+              var key = CryptoJS.enc.Base64.parse(
+                "G0HPTE61KCQ+CYn3voqMlFnXEtpaow6gYDqaaGSVzuE="
+              );
+              var iv = CryptoJS.enc.Base64.parse("cJrccDraCqm7rQXdOsS8Zg==");
+              var ciphertext = CryptoJS.enc.Base64.parse(jsonData.key);
+              var encryptedCP = CryptoJS.lib.CipherParams.create({
+                ciphertext: ciphertext,
+                formatter: CryptoJS.format.OpenSSL,
+              });
+              var decryptedWA = CryptoJS.AES.decrypt(encryptedCP, key, {
+                iv: iv,
+              });
+              var keys = decryptedWA.toString(CryptoJS.enc.Utf8);
 
-          const file = {
-            uri: response.assets[0].uri,
-            name: fileName,
-            type: "image/" + fileType.toLowerCase(),
-          };
+              var keys = keys.split("|");
 
-          const options = {
-            keyPrefix: "",
-            bucket: "24sunrises-temp",
-            region: "us-east-1",
-            accessKey: "AKIA3PWTTOA6DGBN4XKD",
-            secretKey: "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",
-            successActionStatus: 201,
-          };
+              const fileType = response.assets[0].fileName.split(".")[1];
+              const fileName = (makeId(10) + "." + fileType).toLowerCase();
+              setExif(response.assets[0].exif);
 
-          RNS3.put(file, options).then((s3response) => {
-            console.log("s3response", s3response);
+              const file = {
+                uri: response.assets[0].uri,
+                name: fileName,
+                type: "image/" + fileType.toLowerCase(),
+              };
 
-            setImage(s3response.body.postResponse.location)
-            setIsUploading(false);
-            setShowForm(true);
-          });
+              console.log('accessKey', keys[0])
+              console.log('secretKey', keys[1])
+
+              const options = {
+                keyPrefix: "",
+                bucket: "24sunrises-temp",
+                region: "us-east-1",
+                accessKey: keys[0],
+                secretKey: keys[1],
+                successActionStatus: 201,
+              };
+
+              RNS3.put(file, options).then((s3response) => {
+                console.log("s3response", s3response);
+
+                setImage(s3response.body.postResponse.location);
+                setIsUploading(false);
+                setShowForm(true);
+              });
+            });
         }
       });
     };
 
     uploadImage();
+
+    const initialValues = {
+      email: null,
+      exif: null,
+    };
+    setFormValues(initialValues);
   }, []);
 
   return (
@@ -94,7 +147,7 @@ const UploadScreen = ({ route, navigation }) => {
 
       {showForm && (
         <View tw="mx-auto my-auto h-screen w-screen flex items-center justify-center">
-          <Text tw="font-bold mb-4 text-xl">Your Sunrise Picture</Text>
+          <Text tw="mb-4 text-2xl">Your Sunrise Picture:</Text>
           <Image
             source={{
               uri: image,
@@ -106,19 +159,24 @@ const UploadScreen = ({ route, navigation }) => {
           <View tw="mt-3">
             <Text tw="text-center text-lg">Enter Your Email:</Text>
             <TextInput
-              tw="-mt-2 text-2xl text-center"
+              tw="-mt-1 mb-1 text-2xl text-center"
               placeholder="sunrise@domain.com"
+              name="email"
+              onChangeText={handleEmailChange}
             />
           </View>
 
           <View tw="mt-5">
-            <TouchableOpacity tw="bg-sky-800 p-3 rounded text-white">
+            <TouchableOpacity tw="bg-sky-800 px-4 py-1 rounded text-white">
               <Button
                 title="Submit Image"
                 color="white"
                 onPress={submitImage}
               ></Button>
             </TouchableOpacity>
+            <Text tw="text-center text-xs mt-2">
+              We will contact you if your image is selected.
+            </Text>
           </View>
         </View>
       )}
