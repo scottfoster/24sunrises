@@ -8,6 +8,7 @@ import {
   Button,
   TouchableOpacity,
   Alert,
+  ActivityIndicator
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { RNS3 } from "react-native-aws3";
@@ -15,21 +16,51 @@ import CryptoJS from "react-native-crypto-js";
 
 const UploadScreen = ({ route, navigation }) => {
   const [isUploading, setIsUploading] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+
   const [showForm, setShowForm] = useState(false);
 
   const [exif, setExif] = useState(false);
   const [image, setImage] = useState(
     "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/SMPTE_Color_Bars.svg/1024px-SMPTE_Color_Bars.svg.png"
   );
-  const [formSubmit, setFormSubmit] = useState(false);
   const [formValues, setFormValues] = useState([]);
+  const [imageKey, setImageKey] = useState("");
 
-  const submitImage = () => {
+  const submitImage = (imageData) => {
     if (!formValues.email) {
       Alert.alert("Error!", "Please enter an email address.");
     }
 
-    console.log("exif", exif);
+    console.log('imageKey', imageKey)
+
+    console.log('image', "https://0u0b4i5z1h.execute-api.us-east-1.amazonaws.com/submitimage?email=" +formValues.email + "&image=" + imageKey)
+
+    fetch(
+      "https://0u0b4i5z1h.execute-api.us-east-1.amazonaws.com/submitimage?email=" +
+        formValues.email +
+        "&image=" +
+        imageKey,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: 0,
+        },
+      }
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (jsonData) {
+        setShowForm(false)
+        setIsComplete(true)
+        console.log('setIsComplete', true)
+      });
+
+    console.log('submit')
   };
 
   const makeId = (length) => {
@@ -104,9 +135,6 @@ const UploadScreen = ({ route, navigation }) => {
                 type: "image/" + fileType.toLowerCase(),
               };
 
-              console.log('accessKey', keys[0])
-              console.log('secretKey', keys[1])
-
               const options = {
                 keyPrefix: "",
                 bucket: "24sunrises-temp",
@@ -117,8 +145,7 @@ const UploadScreen = ({ route, navigation }) => {
               };
 
               RNS3.put(file, options).then((s3response) => {
-                console.log("s3response", s3response);
-
+                setImageKey(s3response.body.postResponse.key)
                 setImage(s3response.body.postResponse.location);
                 setIsUploading(false);
                 setShowForm(true);
@@ -140,8 +167,15 @@ const UploadScreen = ({ route, navigation }) => {
   return (
     <>
       {isUploading && (
-        <View tw="mx-auto my-auto h-20 w-3/4 bg-yellow-100 flex items-center justify-center">
+        <View tw="mx-auto my-auto h-20 w-3/4 bg-blue-50 flex items-center justify-center">
           <Text tw="text-center font-bold text-xl">Uploading ...</Text>
+          <ActivityIndicator color="#075985" size="large" />
+        </View>
+      )}
+
+      {isComplete && (
+        <View tw="mx-auto my-auto h-20 w-3/4 bg-blue-50 flex items-center justify-center">
+          <Text tw="text-center font-bold text-xl">Your image has been submitted.</Text>
         </View>
       )}
 
@@ -162,6 +196,7 @@ const UploadScreen = ({ route, navigation }) => {
               tw="-mt-1 mb-1 text-2xl text-center"
               placeholder="sunrise@domain.com"
               name="email"
+              autoCapitalize="none"
               onChangeText={handleEmailChange}
             />
           </View>
